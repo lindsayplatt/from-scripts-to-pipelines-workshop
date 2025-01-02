@@ -32,7 +32,8 @@ p2 <- list(
         summarise(
           ncount = n(),
           perc_nd = length(non_detect[non_detect == 1])/length(non_detect) * 100,
-          mean_value = mean(result_value)
+          mean_value = mean(result_value),
+          .groups = 'drop' # Avoid the message about grouped output
         )
     }
   )
