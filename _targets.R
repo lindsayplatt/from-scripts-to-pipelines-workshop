@@ -4,7 +4,10 @@ library(targets)
 tar_option_set(
   packages = c(
     'dplyr',
-    'ggplot2'
+    'ggplot2',
+    'dataRetrieval', # may comment out for actual workshop
+    'readr',
+    'lubridate'
   )
 )
 
