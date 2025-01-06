@@ -20,8 +20,7 @@ p2 <- list(
         mutate(result_unit = ifelse(ResultDetectionConditionText %in% "Not Detected", tolower(DetectionQuantitationLimitMeasure.MeasureUnitCode), tolower(ResultMeasure.MeasureUnitCode)),
                result_value = as.numeric(ifelse(ResultDetectionConditionText %in% "Not Detected", DetectionQuantitationLimitMeasure.MeasureValue, ResultMeasureValue)),
                non_detect = ifelse(ResultDetectionConditionText %in% "Not Detected", 1, 0),
-               date = lubridate::ymd(ActivityStartDate),
-               year = year(date))
+               year = year(ActivityStartDate))
     }
   ),
   # Wrangle result data for plotting and mapping
