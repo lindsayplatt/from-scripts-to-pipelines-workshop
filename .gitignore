@@ -30,4 +30,3 @@
 _targets/*
 */out/*
 !*.placeholder
-_targets/
