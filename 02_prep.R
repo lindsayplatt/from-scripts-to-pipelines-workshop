@@ -20,7 +20,8 @@ p2 <- list(
         mutate(result_unit = ifelse(ResultDetectionConditionText %in% "Not Detected", tolower(DetectionQuantitationLimitMeasure.MeasureUnitCode), tolower(ResultMeasure.MeasureUnitCode)),
                result_value = as.numeric(ifelse(ResultDetectionConditionText %in% "Not Detected", DetectionQuantitationLimitMeasure.MeasureValue, ResultMeasureValue)),
                non_detect = ifelse(ResultDetectionConditionText %in% "Not Detected", 1, 0),
-               year = year(ActivityStartDate))
+               date = lubridate::ymd(ActivityStartDate),
+               year = year(date))
     }
   ),
   # Wrangle result data for plotting and mapping
@@ -36,5 +37,10 @@ p2 <- list(
           .groups = 'drop' # Avoid the message about grouped output
         )
     }
+  ),
+  # Get list of site IDs for plotting
+  tar_target(
+    p2_site_list,
+    unique(p2_filter_dataset$MonitoringLocationIdentifier)
   )
 )
