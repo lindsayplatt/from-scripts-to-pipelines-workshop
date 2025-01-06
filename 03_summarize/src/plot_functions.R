@@ -22,5 +22,5 @@ plot_timeseries <- function(site_id, df, out_path) {
   
   file_path <- paste0(out_path, "/timeseries_", site_id, ".png")
   
-  ggsave(file_path)
+  ggsave(file_path, width = 7, height = 7)
 }
