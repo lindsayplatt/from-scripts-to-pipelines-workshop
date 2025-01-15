@@ -11,7 +11,8 @@ p3 <- list(
   # would love to create a very simple shiny app for this.
   tar_target(
     p3_timeseries_plots_png,
-    plot_timeseries(out_file = sprintf("03_summarize/out/timeseries_%s.png", p2_sites),
+    plot_timeseries(out_file = sprintf("03_summarize/out/timeseries_%s_%s.png", 
+                                       characteristic, p2_sites),
                     site_id = p2_sites, 
                     wqp_data_refined = p2_filter_dataset),
     pattern = map(p2_sites),
