@@ -26,12 +26,8 @@ p2 <- list(
   ),
   
   # Extract the site metadata from the refined dataset
-  tar_target(p2_site_metadata,
-             attr(p2_filter_dataset, "siteInfo") |>
-               select(MonitoringLocationIdentifier, MonitoringLocationName,
-                      LatitudeMeasure, LongitudeMeasure) %>% 
-               # Filter to just the sites that stay in the refined data
-               # (the cleaning steps do not impact `siteInfo` attribute)
-               filter(MonitoringLocationIdentifier %in% p2_sites)
+  tar_target(
+    p2_site_metadata,
+    extract_wqp_site_info(p1_dataset, p2_sites)
   )
 )
