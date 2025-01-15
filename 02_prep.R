@@ -6,37 +6,23 @@ characteristic = "Chloride"
 fraction = "Dissolved"
 
 # Load all `src` files for this phase
-# source('02_prep/src/?????.R')
+source('02_prep/src/process_wqp_data.R')
 
 p2 <- list(
-  # Filter to characteristic and fraction of interest
+  
+  # Filter to characteristic and fraction of interest and clean up some of the
+  # columns using a custom fxn defined in `02_prep/src/process_wqp_data.R`
   tar_target(
     p2_filter_dataset,
-    {
-      # This could definitely be a function
-      p1_dataset |>
-        filter(CharacteristicName == characteristic,
-               ResultSampleFractionText == fraction) |>
-        mutate(result_unit = ifelse(ResultDetectionConditionText %in% "Not Detected", tolower(DetectionQuantitationLimitMeasure.MeasureUnitCode), tolower(ResultMeasure.MeasureUnitCode)),
-               result_value = as.numeric(ifelse(ResultDetectionConditionText %in% "Not Detected", DetectionQuantitationLimitMeasure.MeasureValue, ResultMeasureValue)),
-               non_detect = ifelse(ResultDetectionConditionText %in% "Not Detected", 1, 0),
-               year = year(ActivityStartDate))
-    }
+    refine_wqp_data(p1_dataset, characteristic, fraction)
   ),
+  
   # Wrangle result data for plotting and mapping
   tar_target(
     p2_summarize_dataset_by_year,
-    {
-      p2_filter_dataset |>
-        group_by(MonitoringLocationIdentifier, year, result_unit, CharacteristicName) |>
-        summarise(
-          ncount = n(),
-          perc_nd = length(non_detect[non_detect == 1])/length(non_detect) * 100,
-          mean_value = mean(result_value),
-          .groups = 'drop' # Avoid the message about grouped output
-        )
-    }
+    summarize_wqp_data_by_year(p2_filter_dataset)
   ),
+  
   # Get list of site IDs for plotting
   tar_target(
     p2_site_list,
