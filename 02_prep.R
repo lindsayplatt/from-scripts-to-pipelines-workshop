@@ -1,10 +1,6 @@
 
 # This file includes the target recipes for targets that clean and prepare data
 
-# Configuration elements
-characteristic = "Chloride"
-fraction = "Dissolved"
-
 # Load all `src` files for this phase
 source('02_prep/src/process_wqp_data.R')
 
