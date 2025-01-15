@@ -3,24 +3,24 @@
 #' This function takes a Water Quality Portal (WQP) dataset and maps each site and its
 #' mean concentration over the entire sampling period of the dataset.
 #'
-#' @param data A WQP Result profile from the prep step of the data pipeline. It 
-#' must contain the following columns:
-#' `MonitoringLocationIdentifier`, `CharacteristicName`, `result_value`, `result_unit`,
-#' and `non_detect` and it must have an attribute called `siteInfo`.
-#' @param out_path A string describing the location where the leaflet map should
-#' be saved.
+#' @param out_file A character string representing the filepath to use to save
+#' the leaflet map as an HTML file, including the directory, file name, and extension.
+#' @param wqp_data_refined A WQP Result profile from the prep step of the data pipeline. It 
+#' must contain the following columns: `MonitoringLocationIdentifier`, 
+#' `CharacteristicName`, `result_value`, `result_unit`, and `non_detect` and it 
+#' must have an attribute called `siteInfo`.
 #'
 #' @return A leaflet map showing sampling locations, where each point's radius is
 #' proportional to the mean concentration measured at that site over the entire
 #' dataset. Users can click on points to obtain additional information about the
 #' site and constituent.
 
-map_dataset <- function(data, out_path){
+map_dataset <- function(out_file, wqp_data_refined) {
   
-  site_info <- attr(data, "siteInfo") |>
+  site_info <- attr(wqp_data_refined, "siteInfo") |>
     select(MonitoringLocationIdentifier, MonitoringLocationName, LatitudeMeasure, LongitudeMeasure)
     
-  df <- data |>
+  df <- wqp_data_refined |>
     group_by(MonitoringLocationIdentifier, CharacteristicName, result_unit) |>
     summarise(
       n_count = n(),
@@ -53,7 +53,7 @@ map_dataset <- function(data, out_path){
     )
   
   # Save the map
-  param <- unique(df$CharacteristicName)
-  file_path <- paste0(out_path, "/leaflet_map_", param, ".html")
-  htmlwidgets::saveWidget(map, file_path, selfcontained = TRUE)
+  htmlwidgets::saveWidget(map, out_file, selfcontained = TRUE)
+  
+  return(out_file)
 }
