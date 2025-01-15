@@ -14,7 +14,7 @@ p3 <- list(
     plot_timeseries(out_file = sprintf("03_summarize/out/timeseries_%s_%s.png", 
                                        characteristic, p2_sites),
                     site_id = p2_sites, 
-                    wqp_data_refined = p2_filter_dataset),
+                    wqp_data_refined = p2_refined_dataset),
     pattern = map(p2_sites),
     format = "file"
   ),
