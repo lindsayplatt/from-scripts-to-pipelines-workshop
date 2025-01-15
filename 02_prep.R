@@ -25,7 +25,7 @@ p2 <- list(
   
   # Get list of site IDs for plotting
   tar_target(
-    p2_site_list,
+    p2_sites,
     unique(p2_filter_dataset$MonitoringLocationIdentifier)
   )
 )

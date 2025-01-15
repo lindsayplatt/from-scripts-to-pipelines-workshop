@@ -10,8 +10,8 @@ p3 <- list(
   # would love to create a very simple shiny app for this.
   tar_target(
     p3_timeseries_plots,
-    plot_timeseries(site_id = p2_site_list, df = p2_filter_dataset, out_path = "03_summarize/out"),
-    pattern = map(p2_site_list),
+    plot_timeseries(site_id = p2_sites, df = p2_filter_dataset, out_path = "03_summarize/out"),
+    pattern = map(p2_sites),
     format = "file"
   ),
   tar_target(
