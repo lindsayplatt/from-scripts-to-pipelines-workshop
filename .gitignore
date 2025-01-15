@@ -27,6 +27,6 @@
 .Renviron
 
 # Ignore targets build artifacts
-_targets*/*
+_targets/*
 */out/*
 !*.placeholder

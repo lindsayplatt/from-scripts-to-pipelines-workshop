@@ -7,7 +7,10 @@ tar_option_set(
     'ggplot2',
     'dataRetrieval', # may comment out for actual workshop
     'readr',
-    'lubridate'
+    'lubridate',
+    'leaflet',
+    'htmlwidgets',
+    'scales'
   )
 )
 

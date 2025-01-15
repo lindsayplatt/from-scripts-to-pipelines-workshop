@@ -36,5 +36,10 @@ p2 <- list(
           .groups = 'drop' # Avoid the message about grouped output
         )
     }
+  ),
+  # Get list of site IDs for plotting
+  tar_target(
+    p2_site_list,
+    unique(p2_filter_dataset$MonitoringLocationIdentifier)
   )
 )
