@@ -17,15 +17,25 @@ p2 <- list(
     refine_wqp_data(p1_dataset, characteristic, fraction)
   ),
   
-  # Wrangle result data for plotting and mapping
-  tar_target(
-    p2_summarize_dataset_by_year,
-    summarize_wqp_data_by_year(p2_filter_dataset)
-  ),
-  
-  # Get list of site IDs for plotting
+  # Get list of site IDs that appear in the refined data
   tar_target(
     p2_sites,
     unique(p2_filter_dataset$MonitoringLocationIdentifier)
+  ),
+  
+  # Wrangle result data for plotting and mapping
+  tar_target(
+    p2_summarize_dataset_by_site,
+    summarize_wqp_data_by_site(p2_filter_dataset)
+  ),
+  
+  # Extract the site metadata from the refined dataset
+  tar_target(p2_site_metadata,
+             attr(p2_filter_dataset, "siteInfo") |>
+               select(MonitoringLocationIdentifier, MonitoringLocationName,
+                      LatitudeMeasure, LongitudeMeasure) %>% 
+               # Filter to just the sites that stay in the refined data
+               # (the cleaning steps do not impact `siteInfo` attribute)
+               filter(MonitoringLocationIdentifier %in% p2_sites)
   )
 )

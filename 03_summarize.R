@@ -21,7 +21,8 @@ p3 <- list(
   tar_target(
     p3_leaflet_map_html,
     map_dataset(out_file = sprintf("03_summarize/out/leaflet_map_%s.html", characteristic),
-                wqp_data_refined = p2_filter_dataset)
+                wqp_site_metadata = p2_site_metadata,
+                wqp_data_summarized = p2_summarize_dataset_by_site)
   )
   
 )

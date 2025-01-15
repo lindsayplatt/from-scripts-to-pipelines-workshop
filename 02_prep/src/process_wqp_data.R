@@ -4,7 +4,7 @@
 #' one desired characteristic/fraction combination. Then, it applies some data
 #' cleaning to bring together the result values and units, which are stored in 
 #' different columns depending on whether the measurement represents a value
-#' below the detection limit. It also adds a `year` column.
+#' below the detection limit.
 #' 
 #' @param wqp_data_raw a data.frame with downloaded data from WQP, such as from
 #' the pipeline function `download_wqp_physchem_data()`. 
@@ -31,27 +31,26 @@ refine_wqp_data <- function(wqp_data_raw, characteristic, fraction) {
                                             yes = DetectionQuantitationLimitMeasure.MeasureValue, 
                                             no = ResultMeasureValue)),
            
-           non_detect = ifelse(ResultDetectionConditionText %in% "Not Detected", 1, 0),
-           
-           year = year(ActivityStartDate))
+           non_detect = ifelse(ResultDetectionConditionText %in% "Not Detected", 1, 0))
 }
 
-#' @title Summarize the refined WQP data annual
-#' @description Summarize the filtered and cleaned data to output annual counts,
+#' @title Summarize the refined WQP data per site
+#' @description Summarize the filtered and cleaned data to output site-based counts,
 #' percentage of records that were non-detects, and mean values.
 #' 
 #' @param wqp_data_refined a data.frame of WQP data that has been filtered to 
 #' represent *ONE* characteristic-fraction combo and must contain at least the
 #' following columns: `MonitoringLocationIdentifier`, `CharacteristicName`, 
-#' `year`, `result_unit`, `result_value`, and `non_detect`.
+#' `result_unit`, `result_value`, and `non_detect`.
 #' 
-summarize_wqp_data_by_year <- function(wqp_data_refined) {
+summarize_wqp_data_by_site <- function(wqp_data_refined) {
   wqp_data_refined |>
-    group_by(MonitoringLocationIdentifier, year, result_unit, CharacteristicName) |>
+    group_by(MonitoringLocationIdentifier, result_unit, CharacteristicName) |>
     summarise(
-      ncount = n(),
-      perc_nd = length(non_detect[non_detect == 1])/length(non_detect) * 100,
-      mean_value = mean(result_value),
+      n_count = n(),
+      mean_value = round(mean(result_value, na.rm = TRUE), 2),
+      sd_value = round(sd(result_value, na.rm = TRUE), 2),
+      percent_nondetect = round(sum(non_detect)/length(non_detect) * 100, 2),
       .groups = 'drop' # Avoid the message about grouped output
     )
 }
