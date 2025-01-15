@@ -25,13 +25,13 @@ map_dataset <- function(out_file, wqp_site_metadata, wqp_data_summarized) {
   
   # Create the leaflet map
   map <- leaflet(wqp_data_map) %>%
-    addTiles() %>% # Add base map tiles
+    addProviderTiles("USGS.USImageryTopo") %>% # Add base map tiles
     addCircleMarkers(
       ~LongitudeMeasure,
       ~LatitudeMeasure,
       radius = ~radius, # Use the calculated radius
-      color = "#FFB612", # packers yellow
-      fillColor = "#203731", # packers green
+      color = "red", # "#FFB612", # packers yellow
+      fillColor = "black", # "#203731", # packers green
       fillOpacity = 0.8,
       popup = ~paste0(
         "<b>Location Name:</b> ", MonitoringLocationName, "<br>",
