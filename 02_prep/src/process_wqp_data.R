@@ -55,6 +55,28 @@ summarize_wqp_data_by_site <- function(wqp_data_refined) {
     )
 }
 
+#' @title Summarize the refined WQP data per site and year
+#' @description Summarize the filtered and cleaned data to output annual site-based 
+#' counts, percentage of records that were non-detects, and mean values.
+#' 
+#' @param wqp_data_refined a data.frame of WQP data that has been filtered to 
+#' represent *ONE* characteristic-fraction combo and must contain at least the
+#' following columns: `MonitoringLocationIdentifier`, `CharacteristicName`, 
+#' `result_unit`, `result_value`, and `non_detect`.
+#' 
+summarize_wqp_data_by_year <- function(wqp_data_refined) {
+  wqp_data_refined |>
+    mutate(year = year(ActivityStartDate)) |>
+    group_by(MonitoringLocationIdentifier, year, result_unit, CharacteristicName) |>
+    summarise(
+      n_count = n(),
+      mean_value = round(mean(result_value, na.rm = TRUE), 2),
+      sd_value = round(sd(result_value, na.rm = TRUE), 2),
+      percent_nondetect = round(sum(non_detect)/length(non_detect) * 100, 2),
+      .groups = 'drop' # Avoid the message about grouped output
+    )
+}
+
 #' @title Isolate just the site metadata from the full dataset
 #' @description WQP downloaded data via `dataRetrieval` comes with an data.frame
 #' attribute called `siteInfo`, containing metadata for the sites present in the 
