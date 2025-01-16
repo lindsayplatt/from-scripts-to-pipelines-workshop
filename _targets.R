@@ -21,7 +21,7 @@ state <- 'Wisconsin'
 county <- 'Brown'
 
 # Set 02_prep pipeline configurations
-characteristic <- "Chloride" # Phosphorus
+characteristic <- "Chloride" # Phosphorus, Nitrate
 fraction <- "Dissolved"
 
 source('01_fetch.R')
