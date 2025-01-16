@@ -14,6 +14,9 @@ download_wqp_physchem_data <- function(state, county, start_date, end_date) {
   readWQPdata(service = "Result", # This is currently set to WQX legacy
               profile = "resultPhysChem",
               sampleMedia = c('water', 'Water'),
+              characteristicName = c('Chloride', 
+                                     'Phosphorus', 
+                                     'Nitrate'), 
               statecode = state,
               countycode = county,
               startDateLo = start_date,
