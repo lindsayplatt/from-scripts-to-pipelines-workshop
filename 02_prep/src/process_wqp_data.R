@@ -78,7 +78,7 @@ summarize_wqp_data_by_year <- function(wqp_data_refined) {
 }
 
 #' @title Isolate just the site metadata from the full dataset
-#' @description WQP downloaded data via `dataRetrieval` comes with an data.frame
+#' @description WQP downloaded data via `dataRetrieval` comes with a data.frame
 #' attribute called `siteInfo`, containing metadata for the sites present in the 
 #' downloaded dataset. It includes things like site type, site full name, and 
 #' location. Any filtering done to the data after it was downloaded, such as 
