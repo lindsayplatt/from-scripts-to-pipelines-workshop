@@ -1,46 +1,37 @@
-#' Map mean values using leaflet
+#' @title Map mean values using leaflet
 #' 
-#' This function takes a Water Quality Portal (WQP) dataset and maps each site and its
-#' mean concentration over the entire sampling period of the dataset.
+#' @description This function takes a Water Quality Portal (WQP) dataset and maps 
+#' each site and its mean concentration over the entire sampling period of the dataset.
 #'
-#' @param data A WQP Result profile from the prep step of the data pipeline. It 
-#' must contain the following columns:
-#' `MonitoringLocationIdentifier`, `CharacteristicName`, `result_value`, `result_unit`,
-#' and `non_detect` and it must have an attribute called `siteInfo`.
-#' @param out_path A string describing the location where the leaflet map should
-#' be saved.
+#' @param out_file A character string representing the filepath to use to save
+#' the leaflet map as an HTML file, including the directory, file name, and extension.
+#' @param wqp_site_metadata A WQP siteInfo data.frame containing at least the 
+#' columns `MonitoringLocationIdentifier`, `MonitoringLocationName`, 
+#' `LatitudeMeasure`, and `LongitudeMeasure`.
+#' @param wqp_data_summarized A data.frame with a summary of the WQP per site
+#' as sample count, mean value, standard deviation, and percent of non-detects.
+#' This is created by the custom pipeline fxn, `summarize_wqp_data_by_site()`
 #'
 #' @return A leaflet map showing sampling locations, where each point's radius is
 #' proportional to the mean concentration measured at that site over the entire
 #' dataset. Users can click on points to obtain additional information about the
 #' site and constituent.
 
-map_dataset <- function(data, out_path){
+map_dataset <- function(out_file, wqp_site_metadata, wqp_data_summarized) {
   
-  site_info <- attr(data, "siteInfo") |>
-    select(MonitoringLocationIdentifier, MonitoringLocationName, LatitudeMeasure, LongitudeMeasure)
-    
-  df <- data |>
-    group_by(MonitoringLocationIdentifier, CharacteristicName, result_unit) |>
-    summarise(
-      n_count = n(),
-      mean_value = round(mean(result_value, na.rm = TRUE), 2),
-      sd_value = round(sd(result_value, na.rm = TRUE), 2),
-      percent_nondetect = round(sum(non_detect)/length(non_detect) * 100, 2),
-      .groups = "drop"
-    ) |>
+  wqp_data_map <- wqp_data_summarized |>
     mutate(radius = scales::rescale(mean_value, to = c(3, 10))) |>
-    left_join(site_info, by = "MonitoringLocationIdentifier")
+    left_join(wqp_site_metadata, by = "MonitoringLocationIdentifier")
   
   # Create the leaflet map
-  map <- leaflet(df) %>%
-    addTiles() %>% # Add base map tiles
+  map <- leaflet(wqp_data_map) %>%
+    addProviderTiles("USGS.USImageryTopo") %>% # Add base map tiles
     addCircleMarkers(
       ~LongitudeMeasure,
       ~LatitudeMeasure,
       radius = ~radius, # Use the calculated radius
-      color = "#FFB612", # packers yellow
-      fillColor = "#203731", # packers green
+      color = "red", # "#FFB612", # packers yellow
+      fillColor = "black", # "#203731", # packers green
       fillOpacity = 0.8,
       popup = ~paste0(
         "<b>Location Name:</b> ", MonitoringLocationName, "<br>",
@@ -53,7 +44,7 @@ map_dataset <- function(data, out_path){
     )
   
   # Save the map
-  param <- unique(df$CharacteristicName)
-  file_path <- paste0(out_path, "/leaflet_map_", param, ".html")
-  htmlwidgets::saveWidget(map, file_path, selfcontained = TRUE)
+  htmlwidgets::saveWidget(map, out_file, selfcontained = TRUE)
+  
+  return(out_file)
 }

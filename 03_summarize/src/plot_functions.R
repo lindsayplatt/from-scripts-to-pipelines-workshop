@@ -1,19 +1,19 @@
 #' Plot timeseries for a given site and characteristic
 #'
+#' @param out_file A character string representing the filepath to use to save
+#' the current plot, including the directory, file name, and extension.
 #' @param site_id A character string describing a site ID for a site in the input
 #' dataframe
-#' @param df A dataframe containing water quality data for one characteristic
-#' for one or more sites from the Water Quality Portal. Dataframe must have the
-#' following columns: `MonitoringLocationIdentifier`, `CharacteristicName`,
-#' `ActivityStartDate`, and `result_value`. `ActivityStartDate` should be a date column
-#' and `result_value` should be a numeric column.
-#' @param out_path A folder path to the location where plots should be saved.
+#' @param wqp_data_refined A dataframe containing water quality data for one 
+#' characteristic for one or more sites from the Water Quality Portal. Dataframe 
+#' must have the following columns: `MonitoringLocationIdentifier`, `CharacteristicName`,
+#' `ActivityStartDate`, and `result_value`. `ActivityStartDate` should be a date 
+#' column and `result_value` should be a numeric column.
 #'
-#' @return Saves a .png plot at the `out_path` location and returns the file 
-#' path to the plot.
-
-plot_timeseries <- function(site_id, df, out_path) {
-  site_data <- df |>
+#' @return Saves a .png plot and returns the filepath to the plot.
+#' 
+plot_timeseries <- function(out_file, site_id, wqp_data_refined) {
+  site_data <- wqp_data_refined |>
     filter(MonitoringLocationIdentifier %in% site_id)
   
   ggplot(site_data, aes(x = ActivityStartDate, y = result_value)) +
@@ -23,7 +23,5 @@ plot_timeseries <- function(site_id, df, out_path) {
          y = "mg/L") +
     theme_classic()
   
-  file_path <- paste0(out_path, "/timeseries_", site_id, ".png")
-  
-  ggsave(file_path, width = 7, height = 7)
+  ggsave(out_file, width = 7, height = 7)
 }
