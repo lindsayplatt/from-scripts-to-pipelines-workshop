@@ -7,8 +7,10 @@
 #' 
 #' @param state character string giving the full state name, e.g. "Wisconsin"
 #' @param county character string giving the full county name, e.g. "Brown"
-#' @param start_date character or Date value giving the first date to include
-#' @param end_date character or Date value giving the last date to include
+#' @param start_date character or Date value giving the first date to include,
+#' expects the string to be formatted as `YYYY-MM-DD`
+#' @param end_date character or Date value giving the last date to include,
+#' expects the string to be formatted as `YYYY-MM-DD`
 #' 
 download_wqp_physchem_data <- function(state, county, start_date, end_date) {
   readWQPdata(service = "Result", # This is currently set to WQX legacy
